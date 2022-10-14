@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/Javascript">
+    function generateTable() {
+  // creates a <table> element and a <tbody> element
+  const tbl = document.createElement("table");
+  const tblBody = document.createElement("tbody");
+
+  // creating all cells
+  for (let i = 0; i < 2; i++) {
+    // creates a table row
+    const row = document.createElement("tr");
+
+    for (let j = 0; j < 2; j++) {
+      // Create a <td> element and a text node, make the text
+      // node the contents of the <td>, and put the <td> at
+      // the end of the table row
+      const cell = document.createElement("td");
+      const cellText = document.createTextNode(`cell in row ${i}, column ${j}`);
+      cell.appendChild(cellText);
+      row.appendChild(cell);
+    }
+
+    // add the row to the end of the table body
+    tblBody.appendChild(row);
+  }
+
+  // put the <tbody> in the <table>
+  tbl.appendChild(tblBody);
+  // appends <table> into <body>
+  document.body.appendChild(tbl);
+  // sets the border attribute of tbl to '2'
+  tbl.setAttribute("border", "2");
+}
+  </script>
+  <title>Products</title>
+</head>
+<body>
+  <div class="topnav">
+    <input type="text" placeholder="Search..">
+  </div>
+  <br>
+  <div>
+    <input type = "button" onclick = "addProducts()" value = "View products">
+  </div>
+  <div class="container">
+    <table class="tb" id="first-table">
+      <tr>
+        <th>Product Name</th>
+        <th>Minimum amount</th>
+        <th>Your bid</th>
+      </tr>
+      <tr></tr>
+  </div>
+</body>
+</html>
