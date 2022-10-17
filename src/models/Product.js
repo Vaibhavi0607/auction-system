@@ -1,33 +1,38 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const productSchema = new Schema({
+const { Schema } = mongoose;
+
+const productSchema = new Schema(
+  {
     productName: {
-        type: String,
-        required: true
+      type: String,
+      required: true
     },
     productDescription: String,
     minBidAmount: Number,
     biddingWindow: {
-        type: Number,
-        default: 48
+      type: Number,
+      default: 48
     },
-    biddingStatus: {
-        type:String,
-        enum: ['NEW', 'ONGOING', 'COMPLETED'],
-        default: 'NEW'
+    bidStatus: {
+      type: String,
+      enum: ['NEW', 'ONGOING', 'COMPLETED'],
+      default: 'NEW'
     },
     owner: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'Users',
-        index: true,
-        required: true
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Users',
+      index: true,
+      required: true
     },
-    bids: [{
+    bids: [
+      {
         type: mongoose.SchemaTypes.ObjectId,
         ref: 'Bid'
-    }],
-    },{timestamps: { createdAt: 'created_at', updatedAt: 'updated_at'}
-});
+      }
+    ]
+  },
+  { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } }
+);
 
 module.exports = mongoose.model('Product', productSchema);
