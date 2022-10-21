@@ -2,7 +2,7 @@
 const chai = require('chai');
 const chaiHTTP = require('chai-http');
 const request = require('supertest');
-const { describe, it, beforeEach } = require('mocha');
+const { describe, it, beforeEach, after } = require('mocha');
 
 const server = require('../../../index');
 
@@ -14,6 +14,7 @@ describe('User', () => {
   let addUserPayload;
   let addMoneyPayload;
   let userId;
+
   beforeEach(() => {
     addUserPayload = {
       name: 'test',
@@ -23,22 +24,23 @@ describe('User', () => {
       email: 'test@gmail.com',
       password: '123456hello'
     };
+
     addMoneyPayload = {
       amount: 100
     };
   });
 
+  after(async () => {
+    await request(server).delete(`/remove/${userId}`);
+  });
+
   describe('Add user', () => {
-    it('Do not add with invalid fields', done => {
+    it('Do not add with invalid fields', async () => {
       addUserPayload.password = 12345;
-      request(server)
-        .post('/users')
-        .send(addUserPayload)
-        .end((err, response) => {
-          response.should.have.status(400);
-          done();
-        });
+      const res = await request(server).post('/users').send(addUserPayload);
+      expect(res.status).to.equal(400);
     });
+
     it('Add user', async () => {
       const res = await request(server).post('/users').send(addUserPayload);
       userId = res.body._id;
@@ -52,6 +54,7 @@ describe('User', () => {
       const res = await request(server).post(`/users/addMoney/${userId}`).send(addMoneyPayload);
       expect(res.status).to.equal(400);
     });
+
     it('Add money', async () => {
       const res = await request(server).post(`/users/addMoney/${userId}`).send(addMoneyPayload);
       expect(res.status).to.equal(200);

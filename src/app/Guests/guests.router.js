@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     res.status(200).json(completedBidProducts);
   } catch (err) {
     logger.error(`Error in fetching completed bids for guests ${err.message}`);
-    res.status(404).json(err.message);
+    res.status(500).json(err.message);
   }
 });
 

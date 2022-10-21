@@ -27,19 +27,20 @@ const addProduct = async (req, res) => {
     owner: req.body.owner,
     bids: req.body.bids
   });
+  const user = await User.findById(req.body.owner);
+  if (!user) {
+    logger.error('User not found');
+    res.status(404).json({ message: 'User not found' });
+  }
   try {
-    const user = await User.findById(req.body.owner);
     user.products.push(newproduct);
     await user.save();
+    await newproduct.save();
   } catch (err) {
-    logger.error(`Error finding owner to add product ${err.message}`);
+    logger.error('Error adding products');
     res.status(500).json({ message: (err && err.message) || err });
   }
 
-  await newproduct.save().catch(err => {
-    logger.error(`Error in saving new product ${err.message}`);
-    res.status(500).json({ message: (err && err.message) || err });
-  });
   logger.info('Product added for user');
   res.status(200).json(newproduct);
 };

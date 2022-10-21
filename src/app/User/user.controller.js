@@ -3,16 +3,20 @@ const { logger } = require('../../utils/logger');
 
 const addMoney = async (req, res) => {
   logger.info('Controller adding money');
-  const moneyAmount = req.body.amount;
-  const { userId } = req.params;
-  const user = await User.findById(userId);
-  if (user) {
-    user.amount += moneyAmount;
-    const updatedMoney = await user.save();
-    res.status(200).json(updatedMoney);
-  } else {
-    logger.error('User not found');
-    throw new Error('User not found');
+  try {
+    const moneyAmount = req.body.amount;
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    if (user) {
+      user.amount += moneyAmount;
+      const updatedMoney = await user.save();
+      res.status(200).json(updatedMoney);
+    } else {
+      logger.error('User not found');
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (err) {
+    res.status(500).json(err.message);
   }
 };
 

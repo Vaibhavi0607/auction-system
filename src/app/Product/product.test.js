@@ -2,7 +2,7 @@
 const chai = require('chai');
 const chaiHTTP = require('chai-http');
 const request = require('supertest');
-const { describe, it, beforeEach, before } = require('mocha');
+const { describe, it, beforeEach, before, after } = require('mocha');
 
 const server = require('../../../index');
 
@@ -25,9 +25,11 @@ describe('Product', () => {
       email: 'test@gmail.com',
       password: '123456hello'
     };
+
     const res = await request(server).post('/users').send(addUserPayload);
     userId = res.body._id;
   });
+
   beforeEach(() => {
     addProductPayload = {
       productName: 'test',
@@ -38,18 +40,19 @@ describe('Product', () => {
     };
   });
 
+  after(async () => {
+    await request(server).delete(`/remove/${productId}`);
+    await request(server).delete(`/remove/${userId}`);
+  });
+
   describe('Add Product', () => {
-    it('Do not add with invalid fields', done => {
+    it('Do not add with invalid fields', async () => {
       addProductPayload.owner = userId;
       addProductPayload.minBidAmount = 'one hundred';
-      request(server)
-        .post('/products')
-        .send(addProductPayload)
-        .end((err, response) => {
-          response.should.have.status(400);
-          done();
-        });
+      const res = await request(server).post('/products').send(addProductPayload);
+      expect(res.status).to.equal(400);
     });
+
     it('Add product', async () => {
       const res = await request(server).post('/products').send(addProductPayload);
       productId = res.body._id;
@@ -63,6 +66,7 @@ describe('Product', () => {
       const res = await request(server).get(`/products/startbid/user/${userIdTest}/product/${productId}`).send(addProductPayload);
       expect(res.status).to.equal(400);
     });
+
     it('start bid', async () => {
       const res = await request(server).get(`/products/startbid/user/${userId}/product/${productId}`).send(addProductPayload);
       expect(res.status).to.equal(200);

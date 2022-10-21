@@ -8,6 +8,7 @@ const { logger } = require('./src/utils/logger');
 require('dotenv/config');
 require('./helpers/auth');
 
+// import routes
 const userRoutes = require('./src/app/User/user.router');
 const productRoutes = require('./src/app/Product/product.router');
 const bidsRoutes = require('./src/app/Bid/bid.router');
@@ -33,12 +34,15 @@ app.use('/products', productRoutes);
 app.use('/bids', bidsRoutes);
 app.use('/guest', guestRoutes);
 
+// serve html page for login
 app.get('/', (req, res) => {
   res.send('<a href="/auth/google">Authenticate with Google</a>');
 });
 
+// google sso login
 app.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
 
+// callback url for successful login
 app.get(
   '/auth/google/callback',
   passport.authenticate('google', {
@@ -66,6 +70,7 @@ app.get('/auth/failure', (req, res) => {
   res.send('Failed to authenticate user');
 });
 
+// initialize db
 mongoose.connect(process.env.MONGOURL, mongoOptions, () => {
   logger.info('Connected to db');
 });

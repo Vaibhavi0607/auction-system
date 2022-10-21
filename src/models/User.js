@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const Schema = mongoose;
 
 const userSchema = new mongoose.Schema(
   {
@@ -23,12 +22,7 @@ const userSchema = new mongoose.Schema(
     ]
   },
   {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
-    statics: {
-      findAll() {
-        return this.find();
-      }
-    }
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
   }
 );
 
