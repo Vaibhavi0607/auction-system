@@ -1,10 +1,10 @@
-/* eslint-disable no-console */
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
 const cors = require('cors');
+const { logger } = require('./src/utils/logger');
 require('dotenv/config');
 require('./helpers/auth');
 
@@ -67,8 +67,9 @@ app.get('/auth/failure', (req, res) => {
 });
 
 mongoose.connect(process.env.MONGOURL, mongoOptions, () => {
-  console.log('Connected to db');
+  logger.info('Connected to db');
 });
-app.listen(3000, () => {
-  console.log('Listening on port 3000');
+
+module.exports = app.listen(3000, () => {
+  logger.info('Listening on port 3000');
 });
